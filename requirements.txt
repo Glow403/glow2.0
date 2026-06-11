@@ -1,2 +1,2 @@
-Django>=6.0.0
-requests==2.34.2
+﻿Django>=6.0.0
+gunicorn>=21.0.0
