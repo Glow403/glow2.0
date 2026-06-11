@@ -1,3 +1,4 @@
 ﻿Django>=6.0.0
 gunicorn>=21.0.0,<26.0.0
-django-simpleui>=2026.1.0whitenoise>=6.0.0
+django-simpleui>=2026.1.0
+whitenoise>=6.0.0
