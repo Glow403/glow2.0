@@ -297,3 +297,21 @@ def my_orders(request):
         'title': '我的订单',
         'orders': orders,
     })
+
+
+def create_first_admin(request):
+    """??????????????????"""
+    from django.contrib.auth.models import User
+    try:
+        admin = User.objects.get(username='admin')
+        return render(request, 'main/base.html', {'title': '??????'})
+    except User.DoesNotExist:
+        admin = User.objects.create_superuser(
+            username='admin',
+            email='',
+            password='admin123',
+        )
+        return render(request, 'main/base.html', {
+            'title': '????',
+            'message': f'????????????: admin, ??: admin123',
+        })
