@@ -1,4 +1,5 @@
 ﻿from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -304,14 +305,13 @@ def create_first_admin(request):
     from django.contrib.auth.models import User
     try:
         admin = User.objects.get(username='admin')
-        return render(request, 'main/base.html', {'title': '??????'})
-    except User.DoesNotExist:
-        admin = User.objects.create_superuser(
-            username='admin',
-            email='',
-            password='admin123',
+        return HttpResponse(
+            '???????<a href="/admin/">???</a>',
+            content_type='text/html'
         )
-        return render(request, 'main/base.html', {
-            'title': '????',
-            'message': f'????????????: admin, ??: admin123',
-        })
+    except User.DoesNotExist:
+        User.objects.create_superuser(username='admin', email='', password='admin123')
+        return HttpResponse(
+            '???????????: <b>admin</b> ??: <b>admin123</b><br><a href="/admin/">???</a>',
+            content_type='text/html'
+        )
