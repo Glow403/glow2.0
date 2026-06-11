@@ -4,7 +4,6 @@ import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
 
-# Pre-collect static files on startup
 try:
     django.setup()
     from django.core.management import call_command
