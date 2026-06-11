@@ -1,190 +1,52 @@
 {% extends "main/base.html" %}
-
-{% block title %}?? - ?????{% endblock %}
-
+{% block title %}首页 - 校园服务网{% endblock %}
 {% block content %}
 <style>
-    .hero {
-        text-align: center;
-        padding: 40px 0 50px;
-    }
-    .hero h1 {
-        font-size: 36px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-        color: #999;
-        font-size: 16px;
-        max-width: 500px;
-        margin: 0 auto;
-        line-height: 1.8;
-    }
-    .balance-card {
-        text-align: center;
-        padding: 28px;
-        margin-bottom: 40px;
-    }
-    .balance-card .amount {
-        font-size: 48px;
-        font-weight: 700;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .balance-card .label {
-        color: #999;
-        font-size: 14px;
-        margin-top: 4px;
-    }
-    .service-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 24px;
-        margin-top: 30px;
-    }
-    .service-card {
-        padding: 36px 24px;
-        text-align: center;
-        cursor: pointer;
-    }
-    .service-card .icon {
-        font-size: 40px;
-        margin-bottom: 16px;
-        display: block;
-    }
-    .service-card h3 {
-        font-size: 17px;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #2c3e50;
-    }
-    .service-card .cost {
-        font-size: 13px;
-        color: #999;
-    }
-    .service-card .cost span {
-        color: #667eea;
-        font-weight: 600;
-    }
-    .section-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 50px 0 20px;
-        color: #2c3e50;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .section-title::before {
-        content: '';
-        width: 4px;
-        height: 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 2px;
-    }
-    .order-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .order-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 20px;
-        font-size: 14px;
-    }
-    .order-item .order-info {
-        flex: 1;
-    }
-    .order-item .order-type {
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    .order-item .order-detail {
-        color: #999;
-        font-size: 13px;
-        margin-top: 4px;
-    }
-    .order-item .order-time {
-        color: #bbb;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #ccc;
-        font-size: 15px;
-    }
+.hero { text-align:center; padding:40px 0 50px }
+.hero h1 { font-size:36px; font-weight:700; margin-bottom:12px; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.hero p { color:#999; font-size:16px; max-width:500px; margin:0 auto; line-height:1.8 }
+.balance-card { text-align:center; padding:28px; margin-bottom:40px }
+.balance-card .amount { font-size:48px; font-weight:700; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.balance-card .label { color:#999; font-size:14px; margin-top:4px }
+.service-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:24px; margin-top:30px }
+.service-card { padding:36px 24px; text-align:center; cursor:pointer }
+.service-card .icon { font-size:40px; margin-bottom:16px; display:block }
+.service-card h3 { font-size:17px; font-weight:600; margin-bottom:8px; color:#2c3e50 }
+.service-card .cost { font-size:13px; color:#999 }
+.service-card .cost span { color:#667eea; font-weight:600 }
+.section-title { font-size:20px; font-weight:700; margin:50px 0 20px; color:#2c3e50; display:flex; align-items:center; gap:10px }
+.section-title::before { content:''; width:4px; height:20px; background:linear-gradient(135deg,#667eea,#764ba2); border-radius:2px }
+.order-list { display:flex; flex-direction:column; gap:12px }
+.order-item { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; font-size:14px }
+.order-item .order-info { flex:1 }
+.order-item .order-type { font-weight:600; color:#2c3e50 }
+.order-item .order-detail { color:#999; font-size:13px; margin-top:4px }
+.order-item .order-time { color:#bbb; font-size:13px; white-space:nowrap }
 </style>
-
 <div class="hero">
-    <h1>?????????</h1>
-    <p>???????????????????????????</p>
+<h1>校园一站式服务平台</h1>
+<p>为您提供高效、便捷的校园服务解决方案，让校园生活更轻松</p>
 </div>
-
 <div class="glow-card balance-card">
-    <div class="amount">{{ joy_dots }}</div>
-    <div class="label">?????</div>
+<div class="amount">{{ joy_dots }}</div>
+<div class="label">我的欢乐豆</div>
 </div>
-
-<div class="section-title">????</div>
-
+<div class="section-title">全部服务</div>
 <div class="service-grid">
-    <a href="{% url 'main:service_page' 'brush_course' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>??</h3>
-        <div class="cost">??<span>4</span> ???/?</div>
-    </a>
-    <a href="{% url 'main:service_page' 'campus_run' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>???</h3>
-        <div class="cost">??<span>2</span> ???/?</div>
-    </a>
-    <a href="{% url 'main:service_page' 'homework' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>??</h3>
-        <div class="cost">??<span>2</span> ???/?</div>
-    </a>
-    <a href="{% url 'main:service_page' 'internship_proof' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>????</h3>
-        <div class="cost">??</div>
-    </a>
-    <a href="{% url 'main:service_page' 'thesis' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>??</h3>
-        <div class="cost">??</div>
-    </a>
-    <a href="{% url 'main:service_page' 'medical_record' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>??</h3>
-        <div class="cost">??</div>
-    </a>
-    <a href="{% url 'main:service_page' 'other' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;">
-        <span class="icon">??</span>
-        <h3>??</h3>
-        <div class="cost">??</div>
-    </a>
+<a href="{% url 'main:service_page' 'brush_course' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F4D6;</span><h3>刷课</h3><div class="cost">消耗<span>4</span> 欢乐豆/次</div></a>
+<a href="{% url 'main:service_page' 'campus_run' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F3C3;</span><h3>校园跑</h3><div class="cost">消耗<span>2</span> 欢乐豆/次</div></a>
+<a href="{% url 'main:service_page' 'homework' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F4D1;</span><h3>作业</h3><div class="cost">消耗<span>2</span> 欢乐豆/次</div></a>
+<a href="{% url 'main:service_page' 'internship_proof' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F4CB;</span><h3>实习证明</h3><div class="cost">免费</div></a>
+<a href="{% url 'main:service_page' 'thesis' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F4D4;</span><h3>论文</h3><div class="cost">免费</div></a>
+<a href="{% url 'main:service_page' 'medical_record' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F9AE;</span><h3>病历</h3><div class="cost">免费</div></a>
+<a href="{% url 'main:service_page' 'other' %}" class="glow-card service-card" style="text-decoration:none;color:inherit;"><span class="icon">&#x1F527;</span><h3>其他</h3><div class="cost">免费</div></a>
 </div>
-
 {% if recent_orders %}
-<div class="section-title">????</div>
+<div class="section-title">最近订单</div>
 <div class="glow-card order-list">
-    {% for order in recent_orders %}
-    <div class="order-item">
-        <div class="order-info">
-            <div class="order-type">{{ order.get_service_type_display }}</div>
-            <div class="order-detail">??: {{ order.username }}  ??: {{ order.cost }} ???</div>
-        </div>
-        <div class="order-time">{{ order.created_at|date:"m-d H:i" }}</div>
-    </div>
-    {% endfor %}
+{% for order in recent_orders %}
+<div class="order-item"><div class="order-info"><div class="order-type">{{ order.get_service_type_display }}</div><div class="order-detail">账号: {{ order.username }}  消耗: {{ order.cost }} 欢乐豆</div></div><div class="order-time">{{ order.created_at|date:"m-d H:i" }}</div></div>
+{% endfor %}
 </div>
 {% endif %}
 {% endblock %}

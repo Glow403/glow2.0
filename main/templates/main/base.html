@@ -1,257 +1,65 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}?????{% endblock %}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background-color: #f5f6fa;
-            color: #2c3e50;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* ?????? */
-        .top-bar {
-            height: 3px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-        @keyframes shimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        /* ??? */
-        .navbar {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.06);
-            padding: 0 40px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-            letter-spacing: 2px;
-            text-decoration: none;
-        }
-        .navbar .logo span {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.25s ease;
-            white-space: nowrap;
-        }
-        .nav-links a:hover {
-            background: rgba(102,126,234,0.08);
-            color: #667eea;
-        }
-        .nav-links a.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-        }
-        .nav-links .user-info {
-            margin-left: 12px;
-            padding: 6px 14px;
-            background: linear-gradient(135deg, #f5f6fa, #e8eaf6);
-            border-radius: 20px;
-            font-size: 13px;
-            color: #667eea;
-            font-weight: 600;
-            border: 1px solid rgba(102,126,234,0.15);
-        }
-        .nav-links .logout-btn {
-            margin-left: 8px;
-            color: #999;
-            font-size: 13px;
-        }
-
-        /* ???? */
-        .messages {
-            max-width: 800px;
-            margin: 20px auto 0;
-            padding: 0 20px;
-        }
-        .messages .message {
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .messages .message.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-left: 3px solid #4caf50;
-        }
-        .messages .message.error {
-            background: #fce4ec;
-            color: #c62828;
-            border-left: 3px solid #ef5350;
-        }
-
-        /* ??? */
-        .main-content {
-            flex: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            width: 100%;
-        }
-
-        /* ?????? */
-        .glow-card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.04);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .glow-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102,126,234,0.1);
-        }
-
-        /* ???? */
-        .form-label {
-            display: block;
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e8eaf0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: border-color 0.25s ease, box-shadow 0.25s ease;
-            outline: none;
-            background: #fafbff;
-        }
-        .form-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-            background: #fff;
-        }
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        .btn-primary {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        /* ?? */
-        .footer {
-            background: #fff;
-            border-top: 1px solid rgba(0,0,0,0.06);
-            padding: 24px 40px;
-            text-align: center;
-            color: #999;
-            font-size: 13px;
-            margin-top: auto;
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .footer .contact {
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        .footer .contact span {
-            display: inline-block;
-            background: linear-gradient(135deg, #f5f6fa, #e8eaf6);
-            padding: 4px 16px;
-            border-radius: 20px;
-            color: #667eea;
-            font-weight: 500;
-            border: 1px solid rgba(102,126,234,0.15);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}校园服务网{% endblock %}</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; background:#f5f6fa; color:#2c3e50; min-height:100vh; display:flex; flex-direction:column; }
+.top-bar { height:3px; background:linear-gradient(90deg,#667eea 0%,#764ba2 50%,#667eea 100%); background-size:200% 100%; animation:shimmer 3s ease-in-out infinite }
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.navbar { background:rgba(255,255,255,.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,.06); padding:0 40px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 1px 3px rgba(0,0,0,.04) }
+.navbar .logo { font-size:20px; font-weight:700; color:#1a1a2e; letter-spacing:2px; text-decoration:none }
+.navbar .logo span { background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.nav-links { display:flex; gap:8px; align-items:center }
+.nav-links a { text-decoration:none; color:#555; font-size:14px; padding:8px 16px; border-radius:8px; transition:all .25s ease }
+.nav-links a:hover { background:rgba(102,126,234,.08); color:#667eea }
+.nav-links a.active { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff }
+.nav-links .user-info { margin-left:12px; padding:6px 14px; background:linear-gradient(135deg,#f5f6fa,#e8eaf6); border-radius:20px; font-size:13px; color:#667eea; font-weight:600 }
+.nav-links .logout-btn { margin-left:8px; color:#999; font-size:13px }
+.messages { max-width:800px; margin:20px auto 0; padding:0 20px }
+.messages .message { padding:12px 20px; border-radius:10px; margin-bottom:10px; font-size:14px }
+.messages .message.success { background:#e8f5e9; color:#2e7d32; border-left:3px solid #4caf50 }
+.messages .message.error { background:#fce4ec; color:#c62828; border-left:3px solid #ef5350 }
+.main-content { flex:1; max-width:1200px; margin:0 auto; padding:40px 20px; width:100% }
+.glow-card { background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,.04); border:1px solid rgba(0,0,0,.04); transition:transform .25s ease,box-shadow .25s ease }
+.glow-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(102,126,234,.1) }
+.form-label { display:block; font-size:14px; color:#555; margin-bottom:8px; font-weight:500 }
+.form-input { width:100%; padding:12px 16px; border:1px solid #e8eaf0; border-radius:10px; font-size:14px; outline:none; background:#fafbff; transition:border-color .25s,box-shadow .25s }
+.form-input:focus { border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,.1); background:#fff }
+.form-textarea { min-height:100px; resize:vertical }
+.btn-primary { padding:12px 24px; border:none; border-radius:10px; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; font-size:14px; font-weight:600; cursor:pointer; transition:transform .2s,box-shadow .2s }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(102,126,234,.3) }
+.footer { background:#fff; border-top:1px solid rgba(0,0,0,.06); padding:24px 40px; text-align:center; color:#999; font-size:13px; margin-top:auto }
+.footer .contact { margin-top:8px; font-size:14px }
+.footer .contact span { display:inline-block; background:linear-gradient(135deg,#f5f6fa,#e8eaf6); padding:4px 16px; border-radius:20px; color:#667eea; font-weight:500; border:1px solid rgba(102,126,234,.15) }
+</style>
 </head>
 <body>
-    <div class="top-bar"></div>
-
-    <nav class="navbar">
-        <a href="{% if request.user.is_authenticated %}{% url 'main:services' %}{% else %}{% url 'main:index' %}{% endif %}" class="logo">
-            <span>?????</span>
-        </a>
-        {% if request.user.is_authenticated %}
-        <div class="nav-links">
-            <a href="{% url 'main:services' %}" class="{% if request.resolver_match.url_name == 'services' %}active{% endif %}">????</a>
-            <a href="{% url 'main:my_orders' %}" class="{% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">????</a>
-            <span class="user-info">{{ request.user.username }}</span>
-            <a href="{% url 'main:logout' %}" class="logout-btn">??</a>
-        </div>
-        {% endif %}
-    </nav>
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="message {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="main-content">
-        {% block content %}{% endblock %}
-    </div>
-
-    <footer class="footer">
-        <div> 2026 ?????  All Rights Reserved</div>
-        <div class="contact">???????<span>QQ: 3105649858</span></div>
-    </footer>
+<div class="top-bar"></div>
+<nav class="navbar">
+<a href="{% if request.user.is_authenticated %}{% url 'main:services' %}{% else %}{% url 'main:index' %}{% endif %}" class="logo"><span>校园服务网</span></a>
+{% if request.user.is_authenticated %}
+<div class="nav-links">
+<a href="{% url 'main:services' %}" class="{% if request.resolver_match.url_name == 'services' %}active{% endif %}">全部服务</a>
+<a href="{% url 'main:my_orders' %}" class="{% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">我的订单</a>
+<span class="user-info">{{ request.user.username }}</span>
+<a href="{% url 'main:logout' %}" class="logout-btn">退出</a>
+</div>
+{% endif %}
+</nav>
+{% if messages %}
+<div class="messages">
+{% for message in messages %}
+<div class="message {{ message.tags }}">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+<div class="main-content">{% block content %}{% endblock %}</div>
+<footer class="footer">
+<div> 2026 校园服务网  All Rights Reserved</div>
+<div class="contact">客服联系方式：<span>QQ: 3105649858</span></div>
+</footer>
 </body>
 </html>

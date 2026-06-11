@@ -1,93 +1,42 @@
 {% extends "main/base.html" %}
-
-{% block title %}???? - ?????{% endblock %}
-
+{% block title %}我的订单 - 校园服务网{% endblock %}
 {% block content %}
 <style>
-    .page-header {
-        text-align: center;
-        padding: 30px 0 40px;
-    }
-    .page-header h1 {
-        font-size: 32px;
-        font-weight: 700;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .order-full {
-        padding: 20px 24px;
-    }
-    .order-full-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 16px 0;
-        border-bottom: 1px solid #f0f1f5;
-    }
-    .order-full-item:last-child {
-        border-bottom: none;
-    }
-    .order-full-info {
-        flex: 1;
-    }
-    .order-full-type {
-        font-weight: 600;
-        font-size: 15px;
-        color: #2c3e50;
-        margin-bottom: 6px;
-    }
-    .order-full-detail {
-        font-size: 13px;
-        color: #999;
-        line-height: 1.8;
-    }
-    .order-full-time {
-        color: #bbb;
-        font-size: 13px;
-        white-space: nowrap;
-        text-align: right;
-    }
-    .order-full-time .cost-tag {
-        display: inline-block;
-        background: linear-gradient(135deg, #f5f6fa, #e8eaf6);
-        padding: 2px 10px;
-        border-radius: 10px;
-        font-size: 12px;
-        color: #667eea;
-        margin-top: 4px;
-    }
+.page-header { text-align:center; padding:30px 0 40px }
+.page-header h1 { font-size:32px; font-weight:700; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.order-full { padding:20px 24px }
+.order-full-item { display:flex; justify-content:space-between; align-items:flex-start; padding:16px 0; border-bottom:1px solid #f0f1f5 }
+.order-full-item:last-child { border-bottom:none }
+.order-full-info { flex:1 }
+.order-full-type { font-weight:600; font-size:15px; color:#2c3e50; margin-bottom:6px }
+.order-full-detail { font-size:13px; color:#999; line-height:1.8 }
+.order-full-time { color:#bbb; font-size:13px; white-space:nowrap; text-align:right }
+.order-full-time .cost-tag { display:inline-block; background:linear-gradient(135deg,#f5f6fa,#e8eaf6); padding:2px 10px; border-radius:10px; font-size:12px; color:#667eea; margin-top:4px }
 </style>
-
-<div class="page-header">
-    <h1>????</h1>
-</div>
-
+<div class="page-header"><h1>我的订单</h1></div>
 {% if orders %}
 <div class="glow-card order-full">
-    {% for order in orders %}
-    <div class="order-full-item">
-        <div class="order-full-info">
-            <div class="order-full-type">{{ order.get_service_type_display }}</div>
-            <div class="order-full-detail">
-                ??: {{ order.username }}<br>
-                {% if order.password %}??: {{ order.password }}<br>{% endif %}
-                {% if order.course_name %}??: {{ order.course_name }}<br>{% endif %}
-                {% if order.times %}??: {{ order.times }}<br>{% endif %}
-                {% if order.distance %}??: {{ order.distance }}KM<br>{% endif %}
-                {% if order.remark %}??: {{ order.remark }}{% endif %}
-            </div>
-        </div>
-        <div class="order-full-time">
-            {{ order.created_at|date:"Y-m-d H:i" }}
-            <div class="cost-tag">??: {{ order.cost }} ???</div>
-        </div>
-    </div>
-    {% endfor %}
+{% for order in orders %}
+<div class="order-full-item">
+<div class="order-full-info">
+<div class="order-full-type">{{ order.get_service_type_display }}</div>
+<div class="order-full-detail">
+账号: {{ order.username }}<br>
+{% if order.password %}密码: {{ order.password }}<br>{% endif %}
+{% if order.course_name %}课程: {{ order.course_name }}<br>{% endif %}
+{% if order.times %}次数: {{ order.times }}<br>{% endif %}
+{% if order.distance %}距离: {{ order.distance }}KM<br>{% endif %}
+{% if order.remark %}备注: {{ order.remark }}{% endif %}
+</div>
+</div>
+<div class="order-full-time">
+{{ order.created_at|date:"Y-m-d H:i" }}
+<div class="cost-tag">消耗: {{ order.cost }} 欢乐豆</div>
+</div>
+</div>
+{% endfor %}
 </div>
 {% else %}
-<div class="glow-card" style="padding:60px;text-align:center;">
-    <div style="color:#ccc;font-size:15px;">??????</div>
-</div>
+<div class="glow-card" style="padding:60px;text-align:center;"><div style="color:#ccc;font-size:15px;">暂无订单记录</div></div>
 {% endif %}
 {% endblock %}
