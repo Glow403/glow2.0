@@ -1,0 +1,98 @@
+{% extends "main/base.html" %}
+{% block title %}{{ service_name }} - 校园服务网{% endblock %}
+{% block content %}
+<style>
+.page-header { text-align:center; padding:30px 0 40px }
+.page-header h1 { font-size:32px; font-weight:700; margin-bottom:8px; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.page-header .cost-badge { display:inline-block; background:linear-gradient(135deg,#f5f6fa,#e8eaf6); padding:6px 20px; border-radius:20px; font-size:14px; color:#667eea; font-weight:600; border:1px solid rgba(102,126,234,.12); margin-bottom:8px }
+.page-header .cost-note { color:#999; font-size:13px; margin-top:6px }
+.page-header .total-cost-display { display:inline-block; margin-top:10px; padding:8px 24px; border-radius:20px; font-size:16px; font-weight:700; color:#fff; background:linear-gradient(135deg,#667eea,#764ba2); opacity:0; transition:opacity .3s ease }
+.page-header .total-cost-display.visible { opacity:1 }
+.form-card { max-width:560px; margin:0 auto; padding:40px }
+.form-card h3 { font-size:16px; color:#999; font-weight:400; margin-bottom:28px; text-align:center }
+.balance-info { text-align:center; margin-bottom:24px; padding:12px; background:linear-gradient(135deg,#f5f6fa,#e8eaf6); border-radius:10px; font-size:14px; color:#667eea }
+.times-hint { font-size:13px; color:#667eea; margin-top:4px; min-height:20px }
+.balance-warning { background:linear-gradient(135deg,#fff3e0,#ffe0b2); color:#e65100; border:1px solid #ffb74d }
+</style>
+<div class="page-header">
+<h1>{{ service_name }}</h1>
+{% if base_cost > 0 %}
+<div class="cost-badge">&#x1F4B0; 每次消耗 {{ base_cost }} 欢乐豆</div>
+{% if is_scale %}
+<div class="cost-note">实际消耗 = 每次消耗 x 填写次数</div>
+<div class="total-cost-display" id="totalCostDisplay">预计消耗：<span id="totalCostText">0</span> 个欢乐豆</div>
+{% endif %}
+{% else %}
+<div class="cost-badge">&#x1F381; 免费服务</div>
+{% endif %}
+</div>
+<div class="glow-card form-card">
+<h3>请填写以下信息</h3>
+<div class="balance-info" id="balanceInfo">当前欢乐豆余额：<strong>{{ joy_dots }}</strong></div>
+<form method="post" id="serviceForm" onsubmit="return validateForm()">
+{% csrf_token %}
+{% for field in fields %}
+<div class="form-group">
+<label class="form-label">{{ field.label }}</label>
+{% if field.type == 'textarea' %}
+<textarea name="{{ field.key }}" class="form-input form-textarea" placeholder="请输入{{ field.label }}"></textarea>
+{% elif field.type == 'number' %}
+<div>
+<input type="number" name="{{ field.key }}" class="form-input" placeholder="请输入{{ field.label }}" min="1" step="1" id="field_{{ field.key }}" oninput="updateCost()">
+{% if field.key == 'times' %}
+<div class="times-hint" id="timesHint"></div>
+{% endif %}
+</div>
+{% else %}
+<input type="{{ field.type }}" name="{{ field.key }}" class="form-input" placeholder="请输入{{ field.label }}" required>
+{% endif %}
+</div>
+{% endfor %}
+<button type="submit" class="btn-primary" style="width:100%;margin-top:12px;" id="submitBtn">提 交</button>
+</form>
+</div>
+<script>
+const BASE_COST = {{ base_cost|default:0 }};
+const IS_SCALE = {{ is_scale|yesno:"true,false" }};
+const JOY_DOTS = {{ joy_dots|default:0 }};
+function updateCost() {
+var t = document.getElementById('field_times');
+if(!t) return;
+var v = parseInt(t.value);
+var d = document.getElementById('totalCostDisplay');
+var txt = document.getElementById('totalCostText');
+var hint = document.getElementById('timesHint');
+var bal = document.getElementById('balanceInfo');
+if(IS_SCALE && !isNaN(v) && v>0 && BASE_COST>0){
+var total = BASE_COST * v;
+txt.textContent = total;
+d.classList.add('visible');
+hint.textContent = '将消耗 ' + total + ' 个欢乐豆';
+if(total > JOY_DOTS){
+bal.classList.add('balance-warning');
+bal.innerHTML = '当前欢乐豆余额：<strong style="color:#e65100;">'+JOY_DOTS+'</strong>（不足）';
+}else{
+bal.classList.remove('balance-warning');
+bal.innerHTML = '当前欢乐豆余额：<strong>'+JOY_DOTS+'</strong>';
+}
+}else{
+if(IS_SCALE) d.classList.remove('visible');
+hint.textContent = '';
+bal.classList.remove('balance-warning');
+bal.innerHTML = '当前欢乐豆余额：<strong>'+JOY_DOTS+'</strong>';
+}
+}
+function validateForm() {
+if(IS_SCALE){
+var t = document.getElementById('field_times');
+if(t){
+var v = parseInt(t.value);
+if(isNaN(v)||v<=0){ alert('请填写有效的次数（正整数）'); return false; }
+var total = BASE_COST * v;
+if(total > JOY_DOTS){ if(!confirm('欢乐豆不足，确定要提交吗？')) return false; }
+}
+}
+return true;
+}
+</script>
+{% endblock %}
