@@ -302,17 +302,17 @@ def my_orders(request):
 
 
 def create_first_admin(request):
-    """初始化第一个管理员账号（仅首次访问时使用）"""
+    """Create first admin - only for first visit."""
     from django.contrib.auth.models import User
     try:
         admin = User.objects.get(username='admin')
         return HttpResponse(
-            '管理员已存在，<a href="/admin/">前往后台</a>',
-            content_type='text/html'
+            'Admin already exists. <a href="/admin/">Go to admin</a>',
+            content_type='text/html; charset=utf-8'
         )
     except User.DoesNotExist:
         User.objects.create_superuser(username='admin', email='', password='admin123')
         return HttpResponse(
-            '管理员创建成功！用户名: <b>admin</b> 密码: <b>admin123</b><br><a href="/admin/">前往后台</a>',
-            content_type='text/html'
+            'Admin created! Username: <b>admin</b> Password: <b>admin123</b><br><a href="/admin/">Go to admin</a>',
+            content_type='text/html; charset=utf-8'
         )
