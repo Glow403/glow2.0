@@ -58,10 +58,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Mi
 </div>
 {% endif %}
 <div class="main-content">{% block content %}{% endblock %}</div>
+{% if request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'register' %}
 <footer class="footer">
 <div> 2026 校园服务网 All Rights Reserved</div>
 <div class="contact">客服联系方式：<span>v：asdf675400</span></div>
 </footer>
+{% endif %}
 </body>
 </html>
 
