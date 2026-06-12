@@ -1,4 +1,4 @@
-﻿import os
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,6 +7,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-dev-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
+# Allow wildcard for Render deployment
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["*"]
 
 # Database config - parse DATABASE_URL
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -106,14 +109,21 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Login URL — the app uses /login/, not Django's default /accounts/login/
+LOGIN_URL = "/login/"
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SILENCED_SYSTEM_CHECKS = ["security.W008"]
 
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True

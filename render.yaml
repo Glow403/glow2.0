@@ -12,6 +12,6 @@ services:
       - key: SECRET_KEY
         value: "OWy25Cfg7Rb3kux9HvmMiTBasl0SdpELGr6nKtIXhAY4QwePoz"
       - key: ALLOWED_HOSTS
-        value: "*"
+        value: "*.onrender.com,*"
       - key: PYTHON_VERSION
         value: "3.12"

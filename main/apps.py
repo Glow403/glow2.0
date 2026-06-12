@@ -5,4 +5,5 @@ class MainConfig(AppConfig):
     name = 'main'
 
     def ready(self):
-        pass
+        # Import signals to connect them
+        import main.models  # noqa: F401
