@@ -10,7 +10,6 @@ ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ["*"]
 
-# Database config - parse DATABASE_URL
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
     try:
@@ -107,21 +106,27 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = []
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
-# Login URL - the app uses /login/, not Django's default /accounts/login/
 LOGIN_URL = "/login/"
 
-# WhiteNoise serves static files directly in production
-# Do NOT use ManifestStaticFilesStorage — it requires manifest entries for every file
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+# Use Whitenoise for static files in production
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
-# Ensure proxy SSL is detected correctly behind Render's load balancer
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-# Silence W008 since Render terminates SSL at the edge
 SILENCED_SYSTEM_CHECKS = ["security.W008"]
 
-# Logging to ensure errors appear in Render logs
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
