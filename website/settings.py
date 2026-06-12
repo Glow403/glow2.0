@@ -1,8 +1,4 @@
-"""
-Django settings for website project.
-"""
-
-import os
+﻿import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,12 +49,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "website.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# 数据库配置
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": DATABASE_URL.split("/")[-1].split("?")[0],
+            "USER": DATABASE_URL.split("://")[-1].split("@")[0].split(":")[0],
+            "PASSWORD": DATABASE_URL.split("://")[-1].split("@")[0].split(":")[-1],
+            "HOST": DATABASE_URL.split("@")[-1].split(":")[0],
+            "PORT": DATABASE_URL.split(":")[-1].split("?")[0],
+            "OPTIONS": {"sslmode": "require"},
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
