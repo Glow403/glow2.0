@@ -1,4 +1,4 @@
-﻿"""
+"""
 Django settings for website project.
 """
 
@@ -11,6 +11,51 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-dev-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
+
+# 数据库配置 - 只解析 URL，不连接
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    # 只解析 URL 字符串，不做实际连接
+    try:
+        # postgresql://user:pass@host:port/dbname?sslmode=require
+        remainder = DATABASE_URL.split("://")[1]
+        userpass, remainder2 = remainder.split("@")
+        hostport, remainder3 = remainder2.split("/", 1)
+        dbname_full = remainder3.split("?")[0]
+        hostport = hostport.split("/")[0]  # 防止路径带斜杠
+        user, password = userpass.split(":")
+        if ":" in hostport:
+            host, port = hostport.split(":")
+        else:
+            host = hostport
+            port = "5432"
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": dbname_full,
+                "USER": user,
+                "PASSWORD": password,
+                "HOST": host,
+                "PORT": port,
+                "CONN_MAX_AGE": 0,
+                "CONN_HEALTH_CHECKS": False,
+                "OPTIONS": {"sslmode": "require"},
+            }
+        }
+    except Exception:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 INSTALLED_APPS = [
     "simpleui",
@@ -52,46 +97,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "website.wsgi.application"
-
-# 数据库配置
-DATABASE_URL = os.environ.get("DATABASE_URL")
-if DATABASE_URL:
-    try:
-        parts = DATABASE_URL.split("://")[-1]
-        user_pass = parts.split("@")[0]
-        db_host_port = parts.split("@")[-1]
-        user = user_pass.split(":")[0]
-        password = user_pass.split(":")[1]
-        host = db_host_port.split(":")[0]
-        port = db_host_port.split(":")[1].split("/")[0]
-        dbname = db_host_port.split(":")[1].split("/")[1].split("?")[0]
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.postgresql",
-                "NAME": dbname,
-                "USER": user,
-                "PASSWORD": password,
-                "HOST": host,
-                "PORT": port,
-                "CONN_MAX_AGE": 0,
-                "CONN_HEALTH_CHECKS": False,
-                "OPTIONS": {"sslmode": "require", "connect_timeout": 5},
-            }
-        }
-    except Exception:
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": BASE_DIR / "db.sqlite3",
-            }
-        }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
