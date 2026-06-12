@@ -1,6 +1,9 @@
-{% extends "main/base.html" %}
-{% block title %}{{ title }} - 校园服务网{% endblock %}
-{% block content %}
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }} - 校园服务网</title>
 <style>
 .auth-wrapper { display:flex; justify-content:center; align-items:center; min-height:calc(100vh - 200px); padding:20px }
 .auth-card { width:100%; max-width:420px; padding:48px 40px }
@@ -10,11 +13,26 @@
 .auth-card .btn-primary { width:100%; padding:14px; font-size:16px; margin-top:8px }
 .auth-switch { text-align:center; margin-top:24px; font-size:14px; color:#999 }
 .auth-switch a { color:#667eea; text-decoration:none; font-weight:600 }
+footer.footer { display: none; }
 </style>
+</head>
+<body>
+<div class="top-bar"></div>
+<nav class="navbar">
+<a href="{% url 'main:index' %}" class="logo"><span>校园服务网</span></a>
+</nav>
+{% if messages %}
+<div class="messages">
+{% for message in messages %}
+<div class="message {{ message.tags }}">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+<div class="main-content">
 <div class="auth-wrapper">
 <div class="glow-card auth-card">
 <h1>{% if register_mode %}注册账户{% else %}欢迎回来{% endif %}</h1>
-<p class="subtitle">{% if register_mode %}创建你的专属账号{% else %}登录后即可使用所有服务{% endif %}</p>
+<p class="subtitle">{% if register_mode %}创建你的专属账户{% else %}登录后即可使用所有服务{% endif %}</p>
 <form method="post" action="{% if register_mode %}{% url 'main:register' %}{% else %}{% url 'main:login' %}{% endif %}">
 {% csrf_token %}
 <div class="form-group"><label class="form-label">账号</label><input type="text" name="username" class="form-input" placeholder="请输入账号" required></div>
@@ -22,11 +40,13 @@
 {% if register_mode %}
 <div class="form-group"><label class="form-label">确认密码</label><input type="password" name="confirm_password" class="form-input" placeholder="请再次输入密码" required></div>
 {% endif %}
-<button type="submit" class="btn-primary">{% if register_mode %}立即注册{% else %}登 录{% endif %}</button>
+<button type="submit" class="btn-primary">{% if register_mode %}立即注册{% else %}登录{% endif %}</button>
 </form>
 <div class="auth-switch">
-{% if register_mode %}已有账号？<a href="{% url 'main:login' %}">立即登录</a>{% else %}还没有账号？<a href="{% url 'main:register' %}">免费注册</a>{% endif %}
+{% if register_mode %}已有账号？<a href="{% url 'main:login' %}">立即登录</a>{% else %}还没有账户？<a href="{% url 'main:register' %}">免费注册</a>{% endif %}
 </div>
 </div>
 </div>
-{% endblock %}
+</div>
+</body>
+</html>
