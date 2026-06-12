@@ -106,23 +106,14 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = []
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
 
 LOGIN_URL = "/login/"
 
-# Use Whitenoise for static files in production
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# DO NOT use CompressedManifestStaticFilesStorage or ManifestStaticFilesStorage.
+# On Render + Django 6.0, admin CSS files may not be in the manifest.json,
+# causing: ValueError: Missing staticfiles manifest entry for 'admin/css/base.css'
+# StaticFilesStorage serves files directly from STATIC_ROOT with no manifest dependency.
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SILENCED_SYSTEM_CHECKS = ["security.W008"]
