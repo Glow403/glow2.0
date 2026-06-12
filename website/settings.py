@@ -1,4 +1,4 @@
-import os
+﻿import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -109,7 +109,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Login URL — the app uses /login/, not Django's default /accounts/login/
+# Login URL - the app uses /login/, not Django's default /accounts/login/
 LOGIN_URL = "/login/"
 
 STORAGES = {
@@ -117,13 +117,35 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     },
 }
 
+# Ensure proxy SSL is detected correctly behind Render's load balancer
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# Silence W008 since Render terminates SSL at the edge
 SILENCED_SYSTEM_CHECKS = ["security.W008"]
+
+# Logging to ensure errors appear in Render logs
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "django.request": {
+        "handlers": ["console"],
+        "level": "ERROR",
+        "propagate": True,
+    },
+}
 
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True

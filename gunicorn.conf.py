@@ -5,5 +5,5 @@ threads = 4
 timeout = 120
 accesslog = "-"
 errorlog = "-"
-loglevel = "info"
+loglevel = "warning"
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
