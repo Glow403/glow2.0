@@ -62,19 +62,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "website.wsgi.application"
 
-# 数据库配置
-if DATABASE_URL:
-    try:
+# 数据库配置 - 解析失败时自动回退到 SQLite
+try:
+    if DATABASE_URL:
         parts = DATABASE_URL.split("://")[-1]
         user_pass = parts.split("@")[0]
         db_host_port = parts.split("@")[-1]
         user = user_pass.split(":")[0]
         password = user_pass.split(":")[1]
         host = db_host_port.split(":")[0]
-        port_db = db_host_port.split(":")[1].split("/")[1].split("?")[0]
         port = db_host_port.split(":")[1].split("/")[0]
         dbname = db_host_port.split(":")[1].split("/")[1].split("?")[0]
-        sslmode = "?sslmode=require" if "sslmode" in parts else ""
+        print(f"[CONFIG] Parsed DB: {dbname}@{host}:{port}", file=sys.stderr)
 
         DATABASES = {
             "default": {
@@ -84,18 +83,20 @@ if DATABASE_URL:
                 "PASSWORD": password,
                 "HOST": host,
                 "PORT": port,
-                "OPTIONS": {"sslmode": "require"},
+                "CONN_MAX_AGE": 0,
+                "CONN_HEALTH_CHECKS": True,
+                "OPTIONS": {"sslmode": "require", "connect_timeout": 5},
             }
         }
-    except Exception as e:
-        print(f"[CONFIG] Parse error: {e}", file=sys.stderr)
+    else:
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
                 "NAME": BASE_DIR / "db.sqlite3",
             }
         }
-else:
+except Exception as e:
+    print(f"[CONFIG] Parse error, falling back to SQLite: {e}", file=sys.stderr)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
