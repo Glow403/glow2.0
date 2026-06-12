@@ -1,4 +1,4 @@
-import os
+﻿import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,7 +7,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-dev-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
-# Allow wildcard for Render deployment
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ["*"]
 
@@ -112,14 +111,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Login URL - the app uses /login/, not Django's default /accounts/login/
 LOGIN_URL = "/login/"
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
+# WhiteNoise serves static files directly in production
+# Do NOT use ManifestStaticFilesStorage — it requires manifest entries for every file
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # Ensure proxy SSL is detected correctly behind Render's load balancer
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
