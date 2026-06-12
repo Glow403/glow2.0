@@ -56,7 +56,7 @@ else:
     }
 
 INSTALLED_APPS = [
-    "simpleui",
+    # "simpleui",  # django-simpleui 与 Django 6.0 不兼容，暂时使用原生 admin
     "main",
     "django.contrib.admin",
     "django.contrib.auth",
