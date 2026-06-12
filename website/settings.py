@@ -1,9 +1,8 @@
-"""
+﻿"""
 Django settings for website project.
 """
 
 import os
-import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,14 +11,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-dev-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
-
-# Debug database config
-DATABASE_URL = os.environ.get("DATABASE_URL")
-print(f"[CONFIG] DATABASE_URL is set: {DATABASE_URL is not None}", file=sys.stderr)
-if DATABASE_URL:
-    print(f"[CONFIG] Using PostgreSQL", file=sys.stderr)
-else:
-    print(f"[CONFIG] Using SQLite fallback", file=sys.stderr)
 
 INSTALLED_APPS = [
     "simpleui",
@@ -62,9 +53,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "website.wsgi.application"
 
-# 数据库配置 - 解析失败时自动回退到 SQLite
-try:
-    if DATABASE_URL:
+# 数据库配置
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    try:
         parts = DATABASE_URL.split("://")[-1]
         user_pass = parts.split("@")[0]
         db_host_port = parts.split("@")[-1]
@@ -73,8 +65,6 @@ try:
         host = db_host_port.split(":")[0]
         port = db_host_port.split(":")[1].split("/")[0]
         dbname = db_host_port.split(":")[1].split("/")[1].split("?")[0]
-        print(f"[CONFIG] Parsed DB: {dbname}@{host}:{port}", file=sys.stderr)
-
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.postgresql",
@@ -84,19 +74,18 @@ try:
                 "HOST": host,
                 "PORT": port,
                 "CONN_MAX_AGE": 0,
-                "CONN_HEALTH_CHECKS": True,
+                "CONN_HEALTH_CHECKS": False,
                 "OPTIONS": {"sslmode": "require", "connect_timeout": 5},
             }
         }
-    else:
+    except Exception:
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
                 "NAME": BASE_DIR / "db.sqlite3",
             }
         }
-except Exception as e:
-    print(f"[CONFIG] Parse error, falling back to SQLite: {e}", file=sys.stderr)
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
