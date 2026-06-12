@@ -1,4 +1,4 @@
-import os
+﻿import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-        "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -108,11 +108,15 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 LOGIN_URL = "/login/"
 
-# DO NOT use CompressedManifestStaticFilesStorage or ManifestStaticFilesStorage.
-# On Render + Django 6.0, admin CSS files may not be in the manifest.json,
-# causing: ValueError: Missing staticfiles manifest entry for 'admin/css/base.css'
-# StaticFilesStorage serves files directly from STATIC_ROOT with no manifest dependency.
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+# Use WhiteNoise for static files
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SILENCED_SYSTEM_CHECKS = ["security.W008"]

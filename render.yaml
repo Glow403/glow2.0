@@ -4,8 +4,8 @@
     env: python
     region: singapore
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput
-    startCommand: gunicorn website.wsgi:application --log-file -
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && ls -la staticfiles/admin/css/
+    startCommand: python manage.py migrate --noinput && gunicorn website.wsgi:application --log-file -
     envVars:
       - key: DJANGO_DEBUG
         value: "false"
