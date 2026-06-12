@@ -108,10 +108,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 LOGIN_URL = "/login/"
 
-# No STORAGES override — use Django defaults.
-# STATICFILES_STORAGE is set via WhiteNoise in production.
-# Do NOT use Manifest storage backends — they break on Render with incomplete manifests.
-
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SILENCED_SYSTEM_CHECKS = ["security.W008"]
 
