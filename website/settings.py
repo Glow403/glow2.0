@@ -1,4 +1,4 @@
-"""
+﻿"""
 Django settings for website project.
 """
 
@@ -12,17 +12,15 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 
-# 数据库配置 - 只解析 URL，不连接
+# Database config - parse DATABASE_URL
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
-    # 只解析 URL 字符串，不做实际连接
     try:
-        # postgresql://user:pass@host:port/dbname?sslmode=require
         remainder = DATABASE_URL.split("://")[1]
         userpass, remainder2 = remainder.split("@")
         hostport, remainder3 = remainder2.split("/", 1)
         dbname_full = remainder3.split("?")[0]
-        hostport = hostport.split("/")[0]  # 防止路径带斜杠
+        hostport = hostport.split("/")[0]
         user, password = userpass.split(":")
         if ":" in hostport:
             host, port = hostport.split(":")
@@ -123,3 +121,8 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# Security settings for production
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = "DENY"

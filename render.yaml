@@ -5,7 +5,7 @@
     region: singapore
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: gunicorn website.wsgi --log-file -
+    startCommand: gunicorn website.wsgi:application --log-file -
     envVars:
       - key: DJANGO_DEBUG
         value: "false"
@@ -13,5 +13,5 @@
         value: "OWy25Cfg7Rb3kux9HvmMiTBasl0SdpELGr6nKtIXhAY4QwePoz"
       - key: ALLOWED_HOSTS
         value: "*"
-      - key: PYTHONVERSION
+      - key: PYTHON_VERSION
         value: "3.12"
